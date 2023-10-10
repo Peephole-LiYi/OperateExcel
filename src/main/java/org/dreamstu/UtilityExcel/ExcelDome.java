@@ -1,4 +1,4 @@
-package org.dreamstu.dome;
+package org.dreamstu.UtilityExcel;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -80,86 +80,21 @@ public class ExcelDome {
                         newCellStyle.cloneStyleFrom(sourceCell.getCellStyle());
                         targetCell.setCellStyle(newCellStyle);
                     }
-
-
+                        //判断j在哪行,创建目标文件对应列数据.
                         if (j == 1){
-                            Cell targetSheetRowCell1 = targetSheetRow.createCell(1);
-                            switch (sourceCell.getCellType()) {
-                                case STRING:
-                                    targetSheetRowCell1.setCellValue(sourceCell.getStringCellValue());
-                                    break;
-                                case NUMERIC:
-                                    targetSheetRowCell1.setCellValue(sourceCell.getNumericCellValue());
-                                    break;
-                                case BOOLEAN:
-                                    targetSheetRowCell1.setCellValue(sourceCell.getBooleanCellValue());
-                                    break;
-                                case FORMULA:
-                                    targetSheetRowCell1.setCellFormula(sourceCell.getCellFormula());
-                                    break;
-                                default:
-                                    break;
-                            }
+                            setRowCellData(1, targetSheetRow, sourceCell);
                         }
 
                         if (j == 0){
-                            Cell targetSheetRowCell0 = targetSheetRow.createCell(0);
-                            switch (sourceCell.getCellType()) {
-                                case STRING:
-                                    targetSheetRowCell0.setCellValue(sourceCell.getStringCellValue());
-                                    break;
-                                case NUMERIC:
-                                    targetSheetRowCell0.setCellValue(sourceCell.getNumericCellValue());
-                                    break;
-                                case BOOLEAN:
-                                    targetSheetRowCell0.setCellValue(sourceCell.getBooleanCellValue());
-                                    break;
-                                case FORMULA:
-                                    targetSheetRowCell0.setCellFormula(sourceCell.getCellFormula());
-                                    break;
-                                default:
-                                    break;
-                            }
+                            setRowCellData(0, targetSheetRow, sourceCell);
                         }
 
                         if (j == 2){
-                            Cell targetSheetRowCell2 = targetSheetRow.createCell(2);
-                            switch (sourceCell.getCellType()) {
-                                case STRING:
-                                    targetSheetRowCell2.setCellValue(sourceCell.getStringCellValue());
-                                    break;
-                                case NUMERIC:
-                                    targetSheetRowCell2.setCellValue(sourceCell.getNumericCellValue());
-                                    break;
-                                case BOOLEAN:
-                                    targetSheetRowCell2.setCellValue(sourceCell.getBooleanCellValue());
-                                    break;
-                                case FORMULA:
-                                    targetSheetRowCell2.setCellFormula(sourceCell.getCellFormula());
-                                    break;
-                                default:
-                                    break;
-                            }
+                            setRowCellData(2, targetSheetRow, sourceCell);
                         }
 
                         if (j == 3){
-                            Cell targetSheetRowCell7 = targetSheetRow.createCell(7);
-                            switch (sourceCell.getCellType()) {
-                                case STRING:
-                                    targetSheetRowCell7.setCellValue(sourceCell.getStringCellValue());
-                                    break;
-                                case NUMERIC:
-                                    targetSheetRowCell7.setCellValue(sourceCell.getNumericCellValue());
-                                    break;
-                                case BOOLEAN:
-                                    targetSheetRowCell7.setCellValue(sourceCell.getBooleanCellValue());
-                                    break;
-                                case FORMULA:
-                                    targetSheetRowCell7.setCellFormula(sourceCell.getCellFormula());
-                                    break;
-                                default:
-                                    break;
-                            }
+                            setRowCellData(7, targetSheetRow, sourceCell);
                         }
 
                         if (j == 4){
@@ -167,6 +102,10 @@ public class ExcelDome {
                         }
 
                         if (j == 5){
+                            if (sourceCell == null){
+                                System.out.println("错误!,指定列为空");
+                                break;
+                            }
                             String stringCellValue = sourceCell.getStringCellValue();
                             Cell targetSheetRowCell9 = targetSheetRow.createCell(9);
                             if (stringCellValue.equals("是")){
@@ -181,43 +120,11 @@ public class ExcelDome {
                         }
 
                         if (j == 6){
-                            Cell targetSheetRowCell10 = targetSheetRow.createCell(10);
-                            switch (sourceCell.getCellType()) {
-                                case STRING:
-                                    targetSheetRowCell10.setCellValue(sourceCell.getStringCellValue());
-                                    break;
-                                case NUMERIC:
-                                    targetSheetRowCell10.setCellValue(sourceCell.getNumericCellValue());
-                                    break;
-                                case BOOLEAN:
-                                    targetSheetRowCell10.setCellValue(sourceCell.getBooleanCellValue());
-                                    break;
-                                case FORMULA:
-                                    targetSheetRowCell10.setCellFormula(sourceCell.getCellFormula());
-                                    break;
-                                default:
-                                    break;
-                            }
+                            setRowCellData(10, targetSheetRow, sourceCell);
                         }
 
                         if (j == 7){
-                            Cell targetSheetRowCell11 = targetSheetRow.createCell(11);
-                            switch (sourceCell.getCellType()) {
-                                case STRING:
-                                    targetSheetRowCell11.setCellValue(sourceCell.getStringCellValue());
-                                    break;
-                                case NUMERIC:
-                                    targetSheetRowCell11.setCellValue(sourceCell.getNumericCellValue());
-                                    break;
-                                case BOOLEAN:
-                                    targetSheetRowCell11.setCellValue(sourceCell.getBooleanCellValue());
-                                    break;
-                                case FORMULA:
-                                    targetSheetRowCell11.setCellFormula(sourceCell.getCellFormula());
-                                    break;
-                                default:
-                                    break;
-                            }
+                            setRowCellData(11, targetSheetRow, sourceCell);
                         }
 
 
@@ -257,5 +164,28 @@ public class ExcelDome {
         targetWorkbookOutput.close();
         sourceWorkbook.close();
         targetWorkbook.close();
+    }
+
+    private static void setRowCellData(int i, Row targetSheetRow, Cell sourceCell) {
+        if (sourceCell == null){
+            System.out.println("错误!,指定列为空");
+        }
+        Cell targetSheetRowCell = targetSheetRow.createCell(i);
+        switch (sourceCell.getCellType()) {
+            case STRING:
+                targetSheetRowCell.setCellValue(sourceCell.getStringCellValue());
+                break;
+            case NUMERIC:
+                targetSheetRowCell.setCellValue(sourceCell.getNumericCellValue());
+                break;
+            case BOOLEAN:
+                targetSheetRowCell.setCellValue(sourceCell.getBooleanCellValue());
+                break;
+            case FORMULA:
+                targetSheetRowCell.setCellFormula(sourceCell.getCellFormula());
+                break;
+            default:
+                break;
+        }
     }
 }

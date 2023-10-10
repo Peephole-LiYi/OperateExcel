@@ -13,5 +13,61 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
+
+
+    <!--依赖jar包-->
+    <dependencies>
+
+<!--        5.2.3版本的POI导出包有时会报错-->
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/easyexcel -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/easyexcel-core -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel-core</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+    </dependencies>
+
+
+
 </project>
