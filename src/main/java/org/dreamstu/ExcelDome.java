@@ -1,4 +1,4 @@
-package org.dreamstu.UtilityExcel;
+package org.dreamstu;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -6,43 +6,79 @@ import org.junit.Test;
 
 
 import java.io.*;
+import java.util.Scanner;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 
 /**
  * @author Administrator
  * @Methodname ExcelDome
- * @description TODO
- * @date 2023/9/27 22:33
+ * @description 方法入口
+ * @date 2023/10/12 21:02
  */
 public class ExcelDome {
-    @Test
-    public void ExcelDomeMethd() throws Exception {
-        String sourceFile = "C:\\Users\\Administrator\\Desktop\\人员信息\\交通技术学校人行道闸师生信息\\21幼儿保育2班.xlsx";
-        String targetFile = "C:\\Users\\Administrator\\Desktop\\处理过的\\人员信息导入.xlsx";
 
-        int sourceSheetIndex = 0;
-        int sourceRowIndex = 3;
-        int sourceCellIndex = 0;
-        int targetSheetIndex = 0;
-        int targetRowIndex = 3;
-        int targetCellIndex = 0;
+    public static Scanner scanner = new  Scanner(System.in);
+    public static final Logger logger = Logger.getLogger(ExcelDome.class.getName());
+    public static void main(String[] args) {
 
+        try {
+            FileHandler fileHandler = new FileHandler("log.txt", true);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fileHandler.setFormatter(formatter);
+            logger.addHandler(fileHandler);
 
-        copyData(sourceFile,
-                targetFile,
-                sourceSheetIndex,
-                sourceRowIndex,
-                sourceCellIndex,
-                targetSheetIndex,
-                targetRowIndex,
-                targetCellIndex);
+            while (true) {
+                System.out.println("输入1.进入程序");
+                System.out.println("输入2.退出程序");
+                String commod = scanner.next();
+                switch (commod){
+                    case "1":
+                        System.out.println("请输入源文件地址:");
+                        String sourceFile = scanner.next();
+                        System.out.println("请输入目标文件地址:");
+                        String targetFile = scanner.next();
+                        System.out.println("目前替换的源列为：0.1.2.3.5.6.7  对应目标文件列为：0.1.2.7.9.10.11 从第三行开始");
+
+                        int sourceSheetIndex = 0;
+                        int sourceRowIndex = 3;
+                        int sourceCellIndex = 0;
+                        int targetSheetIndex = 0;
+                        int targetRowIndex = 3;
+                        int targetCellIndex = 0;
+
+                        copyData(sourceFile,
+                                targetFile,
+                                sourceSheetIndex,
+                                sourceRowIndex,
+                                sourceCellIndex,
+                                targetSheetIndex,
+                                targetRowIndex,
+                                targetCellIndex);
+                        break;
+                    case "2":
+                        logger.log(Level.INFO, "程序退出！");
+                        return;
+                    default:
+                        System.out.println("输入有误!请重新输入.");
+                        logger.log(Level.INFO, "输入有误！");
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            logger.log(Level.SEVERE, errorMessage);
+        }
 
     }
 
     /**
      * @description: copy表格方法
      * @author: peephole
-     * @date:
+     * @date: 2023/10/12 21:59
      * @param:
      * @return: true/false
      **/
@@ -73,7 +109,9 @@ public class ExcelDome {
                     Cell sourceCell = sourceSheetRow.getCell(j);
                     Cell targetCell = targetSheetRow.createCell(j);
 
-                    System.out.println(sourceCell);
+
+
+                    //System.out.println(sourceCell);
 //                    if (sourceCell != null) {
                     if (sourceCell != null){
                         CellStyle newCellStyle = targetWorkbook.createCellStyle();
@@ -87,6 +125,7 @@ public class ExcelDome {
 
                         if (j == 0){
                             setRowCellData(0, targetSheetRow, sourceCell);
+                            logger.log(Level.INFO, sourceCell + "已经更改");
                         }
 
                         if (j == 2){
@@ -113,7 +152,7 @@ public class ExcelDome {
                             }else if (stringCellValue.equals("否")){
                                 targetSheetRowCell9.setCellValue("走读");
                             }else {
-                                System.out.println("元数据非是/否!!!!!");
+                                logger.log(Level.WARNING, sourceCell + "的元数据非是/否!!!!!");
 
                             }
                             //System.out.println("当前值为:" + sourceCell.getStringCellValue());
@@ -126,49 +165,29 @@ public class ExcelDome {
                         if (j == 7){
                             setRowCellData(11, targetSheetRow, sourceCell);
                         }
-
-
-//                        targetCell.setCellValue(sourceCell.getStringCellValue());
-
-
-//                        switch (sourceCell.getCellType()) {
-//                            case STRING:
-//                                targetCell.setCellValue(sourceCell.getStringCellValue());
-//                                break;
-//                            case NUMERIC:
-//                                targetCell.setCellValue(sourceCell.getNumericCellValue());
-//                                break;
-//                            case BOOLEAN:
-//                                targetCell.setCellValue(sourceCell.getBooleanCellValue());
-//                                break;
-//                            case FORMULA:
-//                                targetCell.setCellFormula(sourceCell.getCellFormula());
-//                                break;
-//                            default:
-//                                break;
-//                        }
                     }
                 }
-
-//            }else if (sourceSheetRow == null && targetSheetRow == null){
-//                // 如果当前行为空，则在目标Excel文件中添加一个空行
-//                if (sourceSheetRow.getLastCellNum() == 0) {
-//                    int targetRowNum = targetSheet.getLastRowNum() + 1;
-//                    targetSheet.createRow(targetRowNum);
-//                }
-//            }
         }
 
-        FileOutputStream targetWorkbookOutput = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\处理过的\\人员信息导入.xlsx");
+        FileOutputStream targetWorkbookOutput = new FileOutputStream(targetFile);
         targetWorkbook.write(targetWorkbookOutput);
         targetWorkbookOutput.close();
         sourceWorkbook.close();
         targetWorkbook.close();
     }
 
+    /**
+     *
+     * @author peephole
+     * @date 2023/10/12 21:46
+     * @methodName setRowCellData
+     * @description 根据传入单元格判断当前数据为什么类型然后赋值给当前单元格
+     * @return 无返回值
+     */
+
     private static void setRowCellData(int i, Row targetSheetRow, Cell sourceCell) {
         if (sourceCell == null){
-            System.out.println("错误!,指定列为空");
+            logger.log(Level.SEVERE,"错误!,指定列为空");
         }
         Cell targetSheetRowCell = targetSheetRow.createCell(i);
         switch (sourceCell.getCellType()) {
