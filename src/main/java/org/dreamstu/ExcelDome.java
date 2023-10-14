@@ -1,5 +1,6 @@
 package org.dreamstu;
 
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
@@ -11,6 +12,8 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import java.util.zip.Deflater;
+import java.util.zip.ZipOutputStream;
 
 
 /**
@@ -26,6 +29,9 @@ public class ExcelDome {
     public static void main(String[] args) {
 
         try {
+            //在读取文件前设置文件压缩率为-1.0d，以防出现zip炸弹
+            ZipSecureFile.setMinInflateRatio(-1.0d);
+
             FileHandler fileHandler = new FileHandler("log.txt", true);
             SimpleFormatter formatter = new SimpleFormatter();
             fileHandler.setFormatter(formatter);
@@ -87,6 +93,8 @@ public class ExcelDome {
         InputStream sourceStream = new FileInputStream(sourceFile);
         InputStream targetStream = new FileInputStream(targetFile);
 
+
+
         //创建一个工作簿
         Workbook sourceWorkbook = new XSSFWorkbook(sourceStream);
         Workbook targetWorkbook = new XSSFWorkbook(targetStream);
@@ -101,6 +109,8 @@ public class ExcelDome {
             Row sourceSheetRow = sourceSheet.getRow(i);
             Row targetSheetRow = targetSheet.getRow(i);
 
+//            Cell cell = sourceSheetRow.getCell(i);
+//            System.out.println(cell);
             //如果指定行不为空的情况
             if (sourceSheetRow != null && targetSheetRow != null) {
 
@@ -118,55 +128,73 @@ public class ExcelDome {
                         newCellStyle.cloneStyleFrom(sourceCell.getCellStyle());
                         targetCell.setCellStyle(newCellStyle);
                     }
-                        //判断j在哪行,创建目标文件对应列数据.
-                        if (j == 1){
-                            setRowCellData(1, targetSheetRow, sourceCell);
-                        }
+                    //System.out.println(sourceCell);
+                    //判断j在哪行,创建目标文件对应列数据.
 
-                        if (j == 0){
-                            setRowCellData(0, targetSheetRow, sourceCell);
-                            logger.log(Level.INFO, sourceCell + "已经更改");
-                        }
 
-                        if (j == 2){
-                            setRowCellData(2, targetSheetRow, sourceCell);
-                        }
+                    if (j == 1){
 
-                        if (j == 3){
-                            setRowCellData(7, targetSheetRow, sourceCell);
-                        }
+                        setRowCellData(1, targetSheetRow, sourceCell);
+                    }
 
-                        if (j == 4){
-                           continue;
-                        }
+                    if (j == 0){
+                        setRowCellData(0, targetSheetRow, sourceCell);
+                        logger.log(Level.INFO, sourceCell + "已经更改");
+                    }
 
-                        if (j == 5){
-                            if (sourceCell == null){
-                                System.out.println("错误!,指定列为空");
-                                break;
-                            }
-                            String stringCellValue = sourceCell.getStringCellValue();
-                            Cell targetSheetRowCell9 = targetSheetRow.createCell(9);
-                            if (stringCellValue.equals("是")){
-                                targetSheetRowCell9.setCellValue("住宿");
-                            }else if (stringCellValue.equals("否")){
-                                targetSheetRowCell9.setCellValue("走读");
-                            }else {
-                                logger.log(Level.WARNING, sourceCell + "的元数据非是/否!!!!!");
+                    if (j == 2){
+                        setRowCellData(2, targetSheetRow, sourceCell);
+                    }
 
-                            }
-                            //System.out.println("当前值为:" + sourceCell.getStringCellValue());
-                        }
+                    if (j == 3){
+                        //设置目标行的样式
+                        CellStyle newCellStyle = targetWorkbook.createCellStyle();
+                        newCellStyle.cloneStyleFrom(sourceCell.getCellStyle());
+                        targetCell.setCellStyle(newCellStyle);
 
-                        if (j == 6){
-                            setRowCellData(10, targetSheetRow, sourceCell);
-                        }
+                        System.out.println(sourceCell);
+                        //CellType cellType = sourceCell.getCellType();
+                        String cellValue = sourceCell.getStringCellValue();
+//                        System.out.println(cellType);
+                        Cell targetSheetRowCell = targetSheetRow.createCell(8);
+                        targetSheetRowCell.setCellValue(cellValue);
+                        //setRowCellData(7, targetSheetRow, sourceCell);
 
-                        if (j == 7){
-                            setRowCellData(11, targetSheetRow, sourceCell);
+                    }
+
+                    if (j == 5){
+                        continue;
+                    }
+
+                    if (j == 4){
+                        if (sourceCell == null){
+                            System.out.println("错误!,指定列为空");
+                            break;
                         }
+                        String stringCellValue = sourceCell.getStringCellValue();
+                        //System.out.println(stringCellValue);
+                        Cell targetSheetRowCell9 = targetSheetRow.createCell(9);
+
+                        if (stringCellValue.equals("是")){
+                            targetSheetRowCell9.setCellValue("住宿");
+                        }else if (stringCellValue.equals("否")){
+                            targetSheetRowCell9.setCellValue("走读");
+                        }else {
+                            logger.log(Level.WARNING, sourceCell + "的元数据非是/否!!!!!");
+
+                        }
+                        //System.out.println("当前值为:" + sourceCell.getStringCellValue());
+                    }
+
+                    if (j == 6){
+                        setRowCellData(10, targetSheetRow, sourceCell);
+                    }
+
+                    if (j == 7){
+                        setRowCellData(11, targetSheetRow, sourceCell);
                     }
                 }
+            }
         }
 
         FileOutputStream targetWorkbookOutput = new FileOutputStream(targetFile);
